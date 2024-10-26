@@ -2,10 +2,23 @@ import streamlit as st
 import cv2
 import numpy as np
 from datetime import timedelta
+import os
 from helper import YOLO_Pred
 
 # Initialize YOLO_Pred with your model and YAML configuration
-yolo = YOLO_Pred('hell/weights/best.onnx', 'data.yaml')
+model_path = os.path.join("hell", "weights", "best.onnx")
+data_yaml_path = os.path.join("data.yaml")
+
+# Ensure the model and YAML files exist
+if not os.path.exists(model_path):
+    st.error(f"Model file not found: {model_path}")
+    st.stop()
+
+if not os.path.exists(data_yaml_path):
+    st.error(f"YAML configuration file not found: {data_yaml_path}")
+    st.stop()
+
+yolo = YOLO_Pred(model_path, data_yaml_path)
 
 # Streamlit app title and description
 st.set_page_config(page_title="YOLO Object Detection", layout="wide")
@@ -35,7 +48,7 @@ if uploaded_file is not None:
 
     # Initialize frame counter for timestamp
     frame_count = 0
-    fps = video_file.get(cv2.CAP_PROP_FPS)  # Get frames per second of the video
+    fps = video_file.get(cv2.CAP_PROP_FPS) or 30  # Default to 30 FPS if not available
 
     # Process video frame by frame
     while True:
@@ -86,6 +99,9 @@ if uploaded_file is not None:
 
     # Release video capture
     video_file.release()
+
+    # Clean up temporary video file after processing
+    os.remove(temp_video_path)
 
 # Add footer information
 st.sidebar.write("### About")
