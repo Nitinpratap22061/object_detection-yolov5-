@@ -1,11 +1,9 @@
-import streamlit as st
-import cv2
+from PIL import Image
 
-st.title("OpenCV Test")
+st.title("Image Test with Pillow")
 
-# Test OpenCV version
-st.write("OpenCV version:", cv2.__version__)
-
-if st.button("Test OpenCV"):
-    img = cv2.imread('sample_image.jpg')  # Replace with a valid image path
-    st.image(img, channels="BGR")
+if st.button("Upload Image"):
+    uploaded_file = st.file_uploader("Choose an image...", type=["jpg", "png"])
+    if uploaded_file is not None:
+        img = Image.open(uploaded_file)
+        st.image(img, caption='Uploaded Image')
