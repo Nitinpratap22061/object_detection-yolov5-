@@ -1,4 +1,4 @@
 streamlit
-opencv-python
+opencv-python-headless==4.8.0.76  # A version known to work with Python 3.11
 numpy
 pyyaml
